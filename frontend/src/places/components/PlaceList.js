@@ -8,7 +8,7 @@ import classes from "./PlaceList.module.scss";
 const PlaceList = (props) => {
   if (props.items.length === 0) {
     return (
-      <div className={classes}>
+      <div className={`${classes.placeList} center`}>
         <Card>
           <h2>No places found. Maybe create one?</h2>
           <button>Share Place</button>
@@ -17,7 +17,7 @@ const PlaceList = (props) => {
     );
   }
   return (
-    <ul className={classes}>
+    <ul className={classes.placeList}>
       {props.items.map((place) => (
         <PlaceItem
           key={place.id}

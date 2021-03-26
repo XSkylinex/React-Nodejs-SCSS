@@ -1,28 +1,53 @@
-import React from "react";
+import React, { useState } from "react";
 
 import Card from "../../shared/components/UIElements/Card";
+import Button from "../../shared/components/FormElements/Button";
+import Modal from "../../shared/components/UIElements/Modal";
 
 import classes from "./PlaceItem.module.scss";
 
 const PlaceItem = (props) => {
+  const [showMap, setShowMap] = useState(false);
+  const openMapHandler = () => {
+    setShowMap(true);
+  };
+  const closeMapHandler = () => {
+    setShowMap(false);
+  };
   return (
-    <li className={classes}>
-      <Card className={classes}>
-        <div className={classes}>
-          <img src={props.image} alt={props.title} />
+    <React.Fragment>
+      <Modal
+        show={showMap}
+        onCancel={closeMapHandler}
+        header={props.address}
+        contentClass={classes.placeItem__modalContent}
+        footerClass={classes.placeItem__modalActions}
+        footer={<Button onClick={closeMapHandler}>CLOSE</Button>}
+      >
+        <div className={classes.mapContainer}>
+          <h2>THE MAP!</h2>
         </div>
-        <div className={classes}>
-          <h2>{props.title}</h2>
-          <h3>{props.address}</h3>
-          <p>{props.description}</p>
-        </div>
-        <div className={classes}>
-          <button>VIEW ON MAP</button>
-          <button>EDIT</button>
-          <button>DELETE</button>
-        </div>
-      </Card>
-    </li>
+      </Modal>
+      <li className={classes.placeItem}>
+        <Card className={classes.placeItem__content}>
+          <div className={classes.placeItem__image}>
+            <img src={props.image} alt={props.title} />
+          </div>
+          <div className={classes.placeItem__info}>
+            <h2>{props.title}</h2>
+            <h3>{props.address}</h3>
+            <p>{props.description}</p>
+          </div>
+          <div className={classes.placeItem__actions}>
+            <Button inverse onClick={openMapHandler}>
+              VIEW ON MAP
+            </Button>
+            <Button to={`/places/${props.id}`}>EDIT</Button>
+            <Button danger>DELETE</Button>
+          </div>
+        </Card>
+      </li>
+    </React.Fragment>
   );
 };
 export default PlaceItem;

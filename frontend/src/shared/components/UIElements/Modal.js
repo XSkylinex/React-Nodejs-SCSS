@@ -1,6 +1,6 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import React, { useRef } from "react";
 import { CSSTransition } from "react-transition-group";
+import { createPortal } from "react-dom";
 
 import Backdrop from "./Backdrop";
 import classes from "./Modal.module.scss";
@@ -8,7 +8,11 @@ import "./ModalAnimation.scss";
 
 const ModalOverlay = (props) => {
   const content = (
-    <div className={`${classes.modal} ${props.className}`} style={props.style}>
+    <div
+      ref={props.referenceAnimation}
+      className={`${classes.modal} ${props.className}`}
+      style={props.style}
+    >
       <header className={`${classes.modal__header} ${props.headerClass}`}>
         <h2>{props.header}</h2>
       </header>
@@ -26,24 +30,24 @@ const ModalOverlay = (props) => {
       </form>
     </div>
   );
-  return ReactDOM.createPortal(content, document.getElementById("modal-hook"));
+  return createPortal(content, document.getElementById("modal-hook"));
 };
 
 const Modal = (props) => {
-  const nodeRef = React.useRef(null);
-
+  const nodeRef = useRef(null);
+  console.log(nodeRef);
   return (
     <React.Fragment>
       {props.show && <Backdrop onClick={props.onCancel} />}
       <CSSTransition
         nodeRef={nodeRef}
         in={props.show}
+        timeout={200}
         mountOnEnter
         unmountOnExit
-        timeout={200}
-        classNames="modal"
+        classNames="modal1"
       >
-        <ModalOverlay {...props} />
+        <ModalOverlay {...props} referenceAnimation={nodeRef} />
       </CSSTransition>
     </React.Fragment>
   );

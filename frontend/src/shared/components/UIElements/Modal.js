@@ -35,7 +35,6 @@ const ModalOverlay = (props) => {
 
 const Modal = (props) => {
   const nodeRef = useRef(null);
-  console.log(nodeRef);
   return (
     <React.Fragment>
       {props.show && <Backdrop onClick={props.onCancel} />}

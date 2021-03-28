@@ -1,5 +1,5 @@
 import "./App.module.scss";
-import React from "react";
+import React, { useState, useCallback } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -8,28 +8,65 @@ import {
 } from "react-router-dom";
 import Users from "./user/pages/Users";
 import NewPlace from "./places/pages/NewPlace";
-import MainNavigation from './shared/components/Navigation/MainNavigation';
-import UserPlaces from './places/pages/UserPlaces';
+import MainNavigation from "./shared/components/Navigation/MainNavigation";
+import UserPlaces from "./places/pages/UserPlaces";
+import UpdatePlace from "./places/pages/UpdatePlace";
+import Authentication from "./user/pages/Authentication";
+import { AuthenticationContext } from "./shared/context/authentication-context";
 
 const App = () => {
-  return (
-    <Router>
-      <MainNavigation/>
-      <main>
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const login = useCallback(() => {
+    setIsLoggedIn(true);
+  }, []);
+  const logout = useCallback(() => {
+    setIsLoggedIn(false);
+  }, []);
+
+  let routes;
+  if (isLoggedIn) {
+    routes = (
       <Switch>
         <Route path="/" exact>
           <Users />
         </Route>
         <Route path="/:userId/places" exact>
-          <UserPlaces/>
+          <UserPlaces />
         </Route>
         <Route path="/places/new" exact>
           <NewPlace />
         </Route>
+        <Route path="/places/:placeId">
+          <UpdatePlace />
+        </Route>
         <Redirect to="/" />
       </Switch>
-      </main>
-    </Router>
+    );
+  } else {
+    routes = (
+      <Switch>
+        <Route path="/" exact>
+          <Users />
+        </Route>
+        <Route path="/:userId/places" exact>
+          <UserPlaces />
+        </Route>
+        <Route path="/auth">
+          <Authentication />
+        </Route>
+        <Redirect to="/auth" />
+      </Switch>
+    );
+  }
+  return (
+    <AuthenticationContext.Provider
+      value={{ isLoggedIn: isLoggedIn, logout: logout, login: login }}
+    >
+      <Router>
+        <MainNavigation />
+        <main>{routes}</main>
+      </Router>
+    </AuthenticationContext.Provider>
   );
 };
 
